@@ -6,9 +6,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.1",
+    "axios": "0.24.0",
+    "immer": "^9.0.16",
     "next": "latest",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "use-immer": "^0.7.0"
   },
   "devDependencies": {
     "@types/node": "18.11.3",

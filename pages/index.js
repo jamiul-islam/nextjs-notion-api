@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { useImmer } from "use-immer";
 import { Client } from "@notionhq/client";
+import Swal from "sweetalert2";
 
 const notion = new Client({
   auth: process.env.NOTION_SECRET_KEY,
@@ -100,6 +101,7 @@ export default function Home({ data }) {
     });
     const pageData = await response.json();
     console.log(pageData);
+    Swal.fire("YAAY!", "Data added to Notion Successfully", "success");
   };
 
   return (
@@ -114,8 +116,15 @@ export default function Home({ data }) {
           Jamiul's <a className="text-blue-600">spreadsheet plugin</a> for
           notion
         </h1>
+        {/* <button onClick={handleQuery}>
+          <h2 className="text-2xl text-rose-400 font-bold rounded-xl border p-4 mt-4 border-rose-400 hover:text-rose-500 hover:bg-rose-100">
+            <a href="https://api.notion.com/v1/oauth/authorize?client_id=19ab6125-8554-4494-a839-53c4f6868644&response_type=code&owner=user&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F">
+              + notion
+            </a>
+          </h2>
+        </button> */}
 
-        <div className="mt-6 flex max-w-5xl flex-wrap items-center justify-center sm:w-full">
+        <div className="mt-4 flex max-w-5xl flex-wrap items-center justify-center sm:w-full">
           {stock
             .map((item) => (
               <span key={item.id} className="flex flex-row">

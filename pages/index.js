@@ -1,15 +1,11 @@
 import Head from "next/head";
 import { useState } from "react";
-import { useImmer } from "use-immer";
 import { Client } from "@notionhq/client";
 import Swal from "sweetalert2";
 
-const notion = new Client({
-  auth: process.env.NOTION_SECRET_KEY,
-});
-
 export default function Home({ data }) {
   const [stock, setStock] = useState(data);
+  // const [stock, setStock] = useImmer(data);
 
   const handleName = (stockId, stockName) => {
     setStock(
@@ -60,6 +56,9 @@ export default function Home({ data }) {
         }
       })
     );
+    // setStock(draft => {
+    //   draft.properties?.Stock_Number.number = number;
+    // });
   };
 
   const onToggle = (stockId, nextSeen) => {
@@ -180,3 +179,53 @@ export async function getStaticProps() {
     props: { data: response.results },
   };
 }
+
+// export async function getServerSideProps(resolvedUrl) {
+//   try {
+//     const code = resolvedUrl.query.code;
+//     const res = await fetch("https://api.notion.com/v1/oauth/token", {
+//       method: "post",
+//       headers: new Headers({
+//         Authorization:
+//           "Basic" +
+//           (process.env.notionClientID + ":" + process.env.notionClientSecret),
+//         "Content-Type": "application/json",
+//       }),
+//       body: JSON.stringify({
+//         grant_type: "authorization_code",
+//         code: code,
+//         redirect_uri: "http://localhost:3000",
+//       }),
+//     });
+
+//     const response = await res.json();
+//     console.log(response);
+
+//     return { props: { response } };
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+// export function notionCallback() {
+//   const router = useRouter();
+//   const { code } = router.query;
+
+//   useEffect(() => {
+//     if (code) getAccessToken(code);
+//   }, [code]);
+
+//   return <p>Loading...</p>;
+// }
+
+// export async function getAccessToken(code) {
+//   fetch("https://api.notion.com/v1/oauth/token", {
+//     method: "post",
+//     auth: {
+//       userName: process.env.notionClientID,
+//       password: process.env.notionClientSecret,
+//     },
+//     headers: { "Content-Type": "application/json" },
+//     data: { code, grant_type: "authorization_code" },
+//   });
+// }

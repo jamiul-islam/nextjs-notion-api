@@ -115,7 +115,7 @@ export default function Home({ data }) {
         </h1>
         {/* -----------add to notion button----------- */}
         <h2 className="text-2xl text-rose-400 font-bold rounded-xl border p-4 mt-4 border-rose-400 hover:text-rose-500 hover:bg-rose-100">
-          <a href="https://api.notion.com/v1/oauth/authorize?client_id=19ab6125-8554-4494-a839-53c4f6868644&response_type=code&owner=user">
+          <a href="https://api.notion.com/v1/oauth/authorize?client_id=19ab6125-8554-4494-a839-53c4f6868644&response_type=code">
             + notion
           </a>
         </h2>
@@ -176,53 +176,3 @@ export async function getStaticProps() {
     props: { data: response.results },
   };
 }
-
-// export async function getServerSideProps(resolvedUrl) {
-//   try {
-//     const code = resolvedUrl.query.code;
-//     const res = await fetch("https://api.notion.com/v1/oauth/token", {
-//       method: "post",
-//       headers: new Headers({
-//         Authorization:
-//           "Basic" +
-//           (process.env.notionClientID + ":" + process.env.notionClientSecret),
-//         "Content-Type": "application/json",
-//       }),
-//       body: JSON.stringify({
-//         grant_type: "authorization_code",
-//         code: code,
-//         redirect_uri: "http://localhost:3000",
-//       }),
-//     });
-
-//     const response = await res.json();
-//     console.log(response);
-
-//     return { props: { response } };
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// export function notionCallback() {
-//   const router = useRouter();
-//   const { code } = router.query;
-
-//   useEffect(() => {
-//     if (code) getAccessToken(code);
-//   }, [code]);
-
-//   return <p>Loading...</p>;
-// }
-
-// export async function getAccessToken(code) {
-//   fetch("https://api.notion.com/v1/oauth/token", {
-//     method: "post",
-//     auth: {
-//       userName: process.env.notionClientID,
-//       password: process.env.notionClientSecret,
-//     },
-//     headers: { "Content-Type": "application/json" },
-//     data: { code, grant_type: "authorization_code" },
-//   });
-// }

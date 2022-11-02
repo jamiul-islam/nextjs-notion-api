@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     // -------------checking if i have the redirected code
     console.log(
-      "---------this is printing in console---------",
+      "---------this is printing in terminal---------",
       req.query.code
     );
     const code = req.query.code;
@@ -36,32 +36,6 @@ export default async function handler(req, res) {
       .catch((err) => {
         console.log(err.message);
       });
-
-    // try {
-    //   const code = req.query.code;
-    //   const res = await fetch("https://api.notion.com/v1/oauth/token", {
-    //     method: "post",
-    //     headers: new Headers({
-    //       Authorization:
-    //         "Basic" +
-    //         (process.env.NOTION_CLIENT_ID +
-    //           ":" +
-    //           process.env.NOTION_CLIENT_SECRET),
-    //       "Content-Type": "application/json",
-    //     }),
-    //     body: JSON.stringify({
-    //       grant_type: "authorization_code",
-    //       code: code,
-    //       redirect_uri: "http://localhost:3000",
-    //     }),
-    //   });
-    //   const response = await res.json();
-    //   console.log(response);
-    // } catch (error) {
-    //   console.log(error.message);
-    // }
-
-    // -------------redirecting user to the home page
     res.redirect(307, "/");
   } else if (req.method === "POST") {
     const result = req.body.page;

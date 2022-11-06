@@ -16,13 +16,14 @@ export default async function handler(req, res) {
     const code = req.query.code;
     // res.status(200).json("Hello World");
     // -------------authenticating user
+    const auth_token = Buffer.from(
+      `${process.env.NOTION_CLIENT_ID + process.env.NOTION_CLIENT_SECRET}`
+    ).toString("base64");
     axios({
       method: "post",
       url: "https://api.notion.com/v1/oauth/token",
       headers: {
-        Authorization: `Basic ${
-          process.env.NOTION_CLIENT_ID + ":" + process.env.NOTION_CLIENT_SECRET
-        }`,
+        Authorization: `Basic ${auth_token}`,
         "Content-Type": "application/json",
       },
       data: {
@@ -34,7 +35,7 @@ export default async function handler(req, res) {
         console.log(response);
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log(err);
       });
     res.redirect(307, "/");
   } else if (req.method === "POST") {

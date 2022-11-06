@@ -81,6 +81,7 @@ export default function Home({ data }) {
   };
 
   const handleSubmit = async (id, name, quantity, checkBool) => {
+    console.log("working");
     const response = await fetch("/api/database", {
       method: "POST",
       headers: {
@@ -98,7 +99,7 @@ export default function Home({ data }) {
     });
     const pageData = await response.json();
     console.log(pageData);
-    Swal.fire("YAAY!", "Data added to Notion Successfully", "success");
+    // Swal.fire("YAAY!", "Data added to Notion Successfully", "success");
   };
 
   return (
@@ -115,12 +116,12 @@ export default function Home({ data }) {
         </h1>
         {/* -----------add to notion button----------- */}
         <h2 className="text-2xl text-rose-400 font-bold rounded-xl border p-4 mt-4 border-rose-400 hover:text-rose-500 hover:bg-rose-100">
-          <a href="https://api.notion.com/v1/oauth/authorize?client_id=19ab6125-8554-4494-a839-53c4f6868644&response_type=code">
+          <a href="https://api.notion.com/v1/oauth/authorize?client_id=c34278e2-fb42-4e3c-a353-73a570550596&response_type=code&owner=user">
             + notion
           </a>
         </h2>
         {/* -----------my spreadsheet data----------- */}
-        <div className="mt-4 flex max-w-5xl flex-wrap items-center justify-center sm:w-full">
+        {/* <div className="mt-4 flex max-w-5xl flex-wrap items-center justify-center sm:w-full">
           {stock
             .map((item) => (
               <span key={item.id} className="flex flex-row">
@@ -128,6 +129,14 @@ export default function Home({ data }) {
                   className="mt-2 mx-1 w-96 rounded-xl border p-4 text-left hover:text-blue-600 focus:text-blue-600"
                   value={item.properties.stock_name?.title[0]?.text.content}
                   onChange={(e) => handleName(item.id, e.target.value)}
+                  onBlur={() =>
+                    handleSubmit(
+                      item.id,
+                      item.properties.stock_name?.title[0]?.text.content,
+                      item.properties?.Stock_Number?.number,
+                      item.properties.Checkbox.checkbox
+                    )
+                  }
                 />
                 <input
                   className="mt-2 mx-1 w-96 rounded-xl border p-4 text-left hover:text-blue-600 focus:text-blue-600"
@@ -144,7 +153,7 @@ export default function Home({ data }) {
                   }}
                 />
                 <button
-                  onClick={() =>
+                  onBlur={() =>
                     handleSubmit(
                       item.id,
                       item.properties.stock_name?.title[0]?.text.content,
@@ -159,20 +168,20 @@ export default function Home({ data }) {
               </span>
             ))
             .reverse()}
-        </div>
+        </div> */}
       </main>
     </div>
   );
 }
 
-export async function getStaticProps() {
-  const notion = new Client({
-    auth: process.env.NOTION_SECRET_KEY,
-  });
-  const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID,
-  });
-  return {
-    props: { data: response.results },
-  };
-}
+// export async function getStaticProps() {
+//   const notion = new Client({
+//     auth: process.env.NOTION_SECRET_KEY,
+//   });
+//   const response = await notion.databases.query({
+//     database_id: process.env.NOTION_DATABASE_ID,
+//   });
+//   return {
+//     props: { data: response.results },
+//   };
+// }

@@ -8,36 +8,8 @@ const notion = new Client({
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    // -------------checking if i have the redirected code
-    console.log(
-      "---------this is printing in terminal---------",
-      req.query.code
-    );
-    const code = req.query.code;
-    // res.status(200).json("Hello World");
-    // -------------authenticating user
-    const auth_token = Buffer.from(
-      `${process.env.NOTION_CLIENT_ID + process.env.NOTION_CLIENT_SECRET}`
-    ).toString("base64");
-    axios({
-      method: "post",
-      url: "https://api.notion.com/v1/oauth/token",
-      headers: {
-        Authorization: `Basic ${auth_token}`,
-        "Content-Type": "application/json",
-      },
-      data: {
-        grant_type: "authorization_code",
-        code: code,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    res.redirect(307, "/");
+    res.status(200).json("Hello World");
+    // res.redirect(307, "/");
   } else if (req.method === "POST") {
     const result = req.body.page;
     const response = await notion.pages.update({

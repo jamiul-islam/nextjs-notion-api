@@ -1,12 +1,34 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Client } from "@notionhq/client";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 
-export default function Home({ data }) {
-  const [stock, setStock] = useState(data);
-  // console.log(useRouter().query.code);
+export default function Home({ response }) {
+  const [stock, setStock] = useState();
+  const router = useRouter();
+  const code = router.query.code;
+  var result = response;
+  console.log(response.access_token);
+
+  useEffect(() => {
+    if (code !== undefined) {
+      console.log("this is code ------- ", code);
+    }
+  }, [code]);
+
+  const getData = async () => {
+    const notion = new Client({
+      auth: result.access_token,
+    });
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID,
+    });
+    let data = response.results;
+    console.log(data);
+    setStock(data);
+  };
+  getData();
 
   const handleName = (stockId, stockName) => {
     setStock(
@@ -115,11 +137,13 @@ export default function Home({ data }) {
           notion
         </h1>
         {/* -----------add to notion button----------- */}
-        <h2 className="text-2xl text-rose-400 font-bold rounded-xl border p-4 mt-4 border-rose-400 hover:text-rose-500 hover:bg-rose-100">
-          <a href="https://api.notion.com/v1/oauth/authorize?client_id=c34278e2-fb42-4e3c-a353-73a570550596&response_type=code&owner=user">
-            + notion
-          </a>
-        </h2>
+        <button>
+          <h2 className="text-2xl text-rose-400 font-bold rounded-xl border p-4 mt-4 border-rose-400 hover:text-rose-500 hover:bg-rose-100">
+            <a href="https://api.notion.com/v1/oauth/authorize?client_id=c34278e2-fb42-4e3c-a353-73a570550596&response_type=code&owner=user&redirect_uri=http%3A%2F%2Flocalhost%3A3000">
+              + notion
+            </a>
+          </h2>
+        </button>
         {/* -----------my spreadsheet data----------- */}
         {/* <div className="mt-4 flex max-w-5xl flex-wrap items-center justify-center sm:w-full">
           {stock
@@ -175,13 +199,37 @@ export default function Home({ data }) {
 }
 
 // export async function getStaticProps() {
-//   const notion = new Client({
-//     auth: process.env.NOTION_SECRET_KEY,
-//   });
-//   const response = await notion.databases.query({
-//     database_id: process.env.NOTION_DATABASE_ID,
-//   });
-//   return {
-//     props: { data: response.results },
-//   };
+// const notion = new Client({
+//   auth: process.env.NOTION_SECRET_KEY,
+// });
+// const response = await notion.databases.query({
+//   database_id: process.env.NOTION_DATABASE_ID,
+// });
+// return {
+//   props: { data: response.results },
+// };
 // }
+
+export async function getServerSideProps(resolvedUrl) {
+  try {
+    const code = resolvedUrl.query.code;
+    const res = await fetch("https://api.notion.com/v1/oauth/token", {
+      method: "post",
+      headers: new Headers({
+        Authorization: `Basic ${Buffer.from(
+          `${process.env.NOTION_CLIENT_ID}:${process.env.NOTION_CLIENT_SECRET}`
+        ).toString("base64")}`,
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: "http://localhost:3000",
+      }),
+    });
+    const response = await res.json();
+    return { props: { response } };
+  } catch (error) {
+    console.log(error);
+  }
+}

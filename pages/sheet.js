@@ -5,13 +5,16 @@ import { useEffect } from "react";
 import cookie from "cookie";
 
 function Sheet() {
-  const [stock, setStock] = useState();
-  useEffect(() => {
+  const [stock, setStock] = useState([]);
+  const getData = () => {
     fetch("/api/database")
       .then((res) => res.json())
       .then((data) => {
         setStock(data);
       });
+  };
+  useEffect(() => {
+    getData();
   }, []);
   console.log(stock);
 
@@ -146,16 +149,6 @@ function Sheet() {
                       : item.properties.Stock_Number?.number
                   }
                   onChange={(e) => handleNumber(item.id, e.target.value)}
-                />
-                <input
-                  type="checkbox"
-                  className=" checked:bg-blue-500 mt-4 mx-1 p-4"
-                  checked={item.properties.Checkbox.checkbox}
-                  onChange={(e) => {
-                    onToggle(item.id, e.target.checked);
-                  }}
-                />
-                <button
                   onBlur={() =>
                     handleSubmit(
                       item.id,
@@ -164,10 +157,23 @@ function Sheet() {
                       item.properties.Checkbox.checkbox
                     )
                   }
-                  className="mt-2 ml-4 rounded-xl border p-4 bg-slate-100"
-                >
-                  Apply to Notion
-                </button>
+                />
+                <input
+                  type="checkbox"
+                  className=" checked:bg-blue-500 mt-4 mx-1 p-4"
+                  checked={item.properties.Checkbox.checkbox}
+                  onChange={(e) => {
+                    onToggle(item.id, e.target.checked);
+                  }}
+                  onBlur={() =>
+                    handleSubmit(
+                      item.id,
+                      item.properties.stock_name?.title[0]?.text.content,
+                      item.properties?.Stock_Number?.number,
+                      item.properties.Checkbox.checkbox
+                    )
+                  }
+                />
               </span>
             ))
             .reverse()}

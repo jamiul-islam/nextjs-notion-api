@@ -17,28 +17,34 @@ export default async function handler(req, res) {
     res.status(201).json(response.results);
   } else if (req.method === "POST") {
     const result = req.body.page;
-    // const response = await notion.pages.update({
-    //   page_id: result.pageId,
-    //   properties: {
-    //     stock_name: {
-    //       title: [
-    //         {
-    //           text: {
-    //             content: result.stockName,
-    //           },
-    //         },
-    //       ],
-    //     },
-    //     Stock_Number: {
-    //       number: result.stockQuantity,
-    //     },
-    //     Checkbox: {
-    //       checkbox: result.isChecked,
-    //     },
-    //   },
-    // });
-    // res.status(201).json(response);
-    res.status(201).json(result);
-    console.log(result);
+    const cookies = cookie.parse(
+      req ? req.headers.cookie || "" : document.cookie
+    );
+    const notion = new Client({
+      auth: JSON.parse(cookies.secret),
+    });
+    const response = await notion.pages.update({
+      page_id: result.pageId,
+      properties: {
+        stock_name: {
+          title: [
+            {
+              text: {
+                content: result.stockName,
+              },
+            },
+          ],
+        },
+        Stock_Number: {
+          number: result.stockQuantity,
+        },
+        Checkbox: {
+          checkbox: result.isChecked,
+        },
+      },
+    });
+    res.status(201).json(response);
+    // res.status(201).json(result);
+    console.log(response);
   }
 }
